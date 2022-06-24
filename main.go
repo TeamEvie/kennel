@@ -1,22 +1,16 @@
 package main
 
 import (
-	"os"
 	"os/exec"
 
 	"github.com/gofiber/fiber/v2"
 )
 
+// TODO: do more things, yknow?
 func main() {
 	app := fiber.New()
 
-	code := getCode()
-
 	app.Get("/", func(c *fiber.Ctx) error {
-		if c.GetReqHeaders()["Authorization"] != code {
-			return c.Status(401).SendString("Unauthorized")
-		}
-
 		cmd, err := exec.Command("/bin/sh", "./update.sh").Output()
 
 		if err != nil {
@@ -29,12 +23,4 @@ func main() {
 	})
 
 	app.Listen(":5000")
-}
-
-func getCode() string {
-	content, err := os.ReadFile("code.txt")
-	if err != nil {
-		return "password"
-	}
-	return string(content)
 }
